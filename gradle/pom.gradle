@@ -1,0 +1,39 @@
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "Drill"
+            name "Drill4J Team"
+            organization "Epam Systems"
+            organizationUrl "https://www.epam.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/Drill4J/jvmapi.git"
+    }
+}
+
+project.ext.configureMavenCentralMetadata = { pom ->
+    def root = asNode()
+    root.appendNode('name', project.name)
+    root.appendNode('description', 'jvmapi for drill4j')
+    root.appendNode('url', 'https://github.com/Drill4J/jvmapi')
+    root.children().last() + pomConfig
+
+    def dependenciesNode = asNode().getAt("dependencies")[0]
+    if (dependenciesNode != null) {
+        def dependencyNode = dependenciesNode.appendNode('dependency')
+        dependencyNode.appendNode('groupId', "$group")
+        dependencyNode.appendNode('artifactId', "$project.name")
+        dependencyNode.appendNode('version', "$project.version")
+    }
+}
+
+project.ext.configurePom = pomConfig
