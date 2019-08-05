@@ -8,6 +8,7 @@ import kotlin.reflect.*
 fun printAllowedCapabilities() {
     val potentialCapabilities = GetPotentialCapabilities()
     potentialCapabilities.useContents {
+        println("Debug info")
         println("--------------------------Allowed Capabilities--------------------------")
         println(this::can_access_local_variables.name + " = " + can_access_local_variables)
         println(this::can_force_early_return.name + " = " + can_force_early_return)
