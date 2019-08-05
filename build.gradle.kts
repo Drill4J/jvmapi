@@ -9,8 +9,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 plugins {
     id("org.jetbrains.kotlin.multiplatform") version ("1.3.30")
 }
-
-apply(from = rootProject.file("gradle/publish.gradle"))
+if (System.getProperty("drill.repo.url") != null)
+    apply(from = rootProject.file("gradle/publish.gradle"))
 
 repositories {
     mavenCentral()
