@@ -17,7 +17,7 @@ task emptyJar(type: Jar) {
 publishing {
     repositories {
         maven {
-            url uri(System.getProperty("drill.repo.url"))
+            url uri(System.getProperty("drill.repo.url")?:"")
         }
     }
     publications.all {
