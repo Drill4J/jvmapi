@@ -33,3 +33,6 @@ jobs:
       script:
         - ./gradlew -s -i check
         - ./gradlew -s -i artifactoryPublish
+        - ./gradlew artifactoryPublish
+        - ./gradlew artifactoryPublish
+        - ./gradlew artifactoryPublish
