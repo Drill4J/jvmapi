@@ -27,10 +27,7 @@ jobs:
         - echo install
       before_script:
         - echo before_script
+        - chmod +x ./gradlew
       script:
-#        - ./gradlew -s -i check
-        - |
-          if [ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" ]; then
-              chmod +x ./gradlew
-            ./gradlew -s -i artifactoryPublish -DbintrayUser=$bintrayUser -DbintrayApiKey=$bintrayApiKey
-          fi
+        - ./gradlew -s -i check
+        - ./gradlew -s -i artifactoryPublish -DbintrayUser=$bintrayUser -DbintrayApiKey=$bintrayApiKey
