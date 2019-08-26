@@ -19,8 +19,6 @@ jobs:
       env:
         KBUILD=macos
         JAVA_OPTS=-Xmx2g
-#        BINTRAY_USER=$BINTRAY_USER
-#        BINTRAY_API_KEY=$BINTRAY_API_KEY
       language: java
       jdk: openjdk10
       before_install:
@@ -33,6 +31,3 @@ jobs:
       script:
         - ./gradlew -s -i check
         - ./gradlew -s -i artifactoryPublish
-        - ./gradlew artifactoryPublish
-        - ./gradlew artifactoryPublish
-        - ./gradlew artifactoryPublish
