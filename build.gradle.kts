@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 plugins {
     id("org.jetbrains.kotlin.multiplatform") version ("1.3.50")
     id("com.jfrog.bintray") version ("1.8.3")
+    id("com.jfrog.artifactory") version ("4.9.8")
 }
 apply(from = "https://gist.githubusercontent.com/IgorKey/1a3577ba3cdafe7dc2c52bcaebcfb00d/raw/a9f031cab335bd4ea3fbdb8110f85685c10f96cf/publish.gradle")
 
