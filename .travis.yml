@@ -9,7 +9,7 @@ jobs:
       env: KBUILD=windows
       language: shell # java is not supported but jdk is installed
       script:
-        - powershell -Command "cmd /c scripts/win.bat"
+        - powershell -Command "cmd /c win.bat"
     - os: osx
       stage: test_and_upload
       env:
