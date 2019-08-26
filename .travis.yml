@@ -4,16 +4,12 @@ stages:
     if: branch = master
 jobs:
   include:
-#    - os: windows
-#      stage: test_and_upload
-#      env: KBUILD=windows
-#      language: shell # java is not supported but jdk is installed
-#      script:
-#        - powershell -Command "cmd /c travis_win.bat"
-#        - |
-#          if [ $TRAVIS_BRANCH == "master" && $TRAVIS_PULL_REQUEST == "false" ]; then
-#            powershell -Command "cmd /c travis_win_bintray.bat"
-#          fi
+    - os: windows
+      stage: test_and_upload
+      env: KBUILD=windows
+      language: shell # java is not supported but jdk is installed
+      script:
+        - powershell -Command "cmd /c scripts/win.bat"
     - os: osx
       stage: test_and_upload
       env:
