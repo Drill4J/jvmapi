@@ -1,3 +1,3 @@
-rootProject.name = "drill-jvmapi"
+rootProject.name = "jvmapi"
 
 enableFeaturePreview("GRADLE_METADATA")
