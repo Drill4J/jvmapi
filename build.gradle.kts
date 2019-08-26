@@ -13,6 +13,9 @@ plugins {
 }
 apply(from = "https://gist.githubusercontent.com/IgorKey/1a3577ba3cdafe7dc2c52bcaebcfb00d/raw/fedf6b3200297f244703997bd24a733bd3e056a8/publish.gradle")
 
+println("xxx")
+println(System.getenv("BINTRAY_USER"))
+println(System.getenv("BINTRAY_API_KEY"))
 repositories {
     mavenCentral()
 }
