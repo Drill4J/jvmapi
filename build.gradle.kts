@@ -9,10 +9,13 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 plugins {
     id("org.jetbrains.kotlin.multiplatform") version ("1.3.50")
     id("com.jfrog.bintray") version ("1.8.3")
-    id("com.jfrog.artifactory") version  ("4.9.8")
+    id("com.jfrog.artifactory") version ("4.9.8")
 }
 apply(from = "https://gist.githubusercontent.com/IgorKey/1a3577ba3cdafe7dc2c52bcaebcfb00d/raw/fedf6b3200297f244703997bd24a733bd3e056a8/publish.gradle")
-
+println("hi")
+System.getenv("BINTRAY_API_KEY").forEach {
+    println(it)
+}
 repositories {
     mavenCentral()
 }
