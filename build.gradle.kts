@@ -13,9 +13,6 @@ plugins {
 }
 apply(from = "https://gist.githubusercontent.com/IgorKey/1a3577ba3cdafe7dc2c52bcaebcfb00d/raw/fedf6b3200297f244703997bd24a733bd3e056a8/publish.gradle")
 
-println("xxx")
-println(System.getenv("BINTRAY_USER"))
-println(System.getenv("BINTRAY_API_KEY"))
 repositories {
     mavenCentral()
 }
@@ -49,9 +46,11 @@ kotlin {
             createNativeTargetForCurrentOs("native") {
             }
         else {
-            mingwX64("windowsX64")
-            linuxX64("linuxX64")
-            macosX64("macosX64")
+            if (!Os.isFamily(Os.FAMILY_MAC)) {
+                mingwX64("windowsX64")
+                linuxX64("linuxX64")
+            } else
+                macosX64("macosX64")
         }
 
     }
@@ -59,9 +58,12 @@ kotlin {
     sourceSets {
         val commonNativeSs = maybeCreate("nativeMain")
         if (!isDevMode) {
-            val windowsX64Main by getting { dependsOn(commonNativeSs) }
-            val linuxX64Main by getting { dependsOn(commonNativeSs) }
-            val macosX64Main by getting { dependsOn(commonNativeSs) }
+            if(!Os.isFamily(Os.FAMILY_MAC)) {
+                val windowsX64Main by getting { dependsOn(commonNativeSs) }
+                val linuxX64Main by getting { dependsOn(commonNativeSs) }
+            }else {
+                val macosX64Main by getting { dependsOn(commonNativeSs) }
+            }
         }
     }
     configure(sourceSets) {
