@@ -26,4 +26,4 @@ jobs:
         - chmod +x ./gradlew
       script:
         - ./gradlew -s -i check
-        - ./gradlew -s -i artifactoryPublish
+        - ./gradlew -s -i publish

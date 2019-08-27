@@ -11,7 +11,8 @@ plugins {
     id("com.jfrog.bintray") version ("1.8.3")
     id("com.jfrog.artifactory") version ("4.9.8")
 }
-apply(from = "https://gist.githubusercontent.com/IgorKey/1a3577ba3cdafe7dc2c52bcaebcfb00d/raw/fedf6b3200297f244703997bd24a733bd3e056a8/publish.gradle")
+
+apply(from = "https://gist.githubusercontent.com/IgorKey/e7a0e07428b6e56283d08dbc605bb942/raw/0af997f4044c4d1e1667e9ee67b2ebdf736fabde/publish.gradle")
 
 repositories {
     mavenCentral()
@@ -46,11 +47,9 @@ kotlin {
             createNativeTargetForCurrentOs("native") {
             }
         else {
-            if (!Os.isFamily(Os.FAMILY_MAC)) {
-                mingwX64("windowsX64")
-                linuxX64("linuxX64")
-            } else
-                macosX64("macosX64")
+            mingwX64("windowsX64")
+            linuxX64("linuxX64")
+            macosX64("macosX64")
         }
 
     }
@@ -58,12 +57,9 @@ kotlin {
     sourceSets {
         val commonNativeSs = maybeCreate("nativeMain")
         if (!isDevMode) {
-            if(!Os.isFamily(Os.FAMILY_MAC)) {
-                val windowsX64Main by getting { dependsOn(commonNativeSs) }
-                val linuxX64Main by getting { dependsOn(commonNativeSs) }
-            }else {
-                val macosX64Main by getting { dependsOn(commonNativeSs) }
-            }
+            val windowsX64Main by getting { dependsOn(commonNativeSs) }
+            val linuxX64Main by getting { dependsOn(commonNativeSs) }
+            val macosX64Main by getting { dependsOn(commonNativeSs) }
         }
     }
     configure(sourceSets) {
@@ -77,7 +73,7 @@ kotlin {
 
         val cm = compilations["main"]
         if (cm is KotlinNativeCompilation) {
-            File(project.projectDir, "native/nativeInterop/cinterop").listFiles()?.filter { it.isFile() }
+            File(project.projectDir, "native/nativeInterop/cinterop").listFiles()?.filter { it.isFile }
                 ?.forEach { file ->
                     val filePath = file.absolutePath
                     val name = file.nameWithoutExtension
