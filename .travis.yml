@@ -1,7 +1,10 @@
 stages:
   - test_and_upload
   - name: publish
-    if: branch = master
+    if: NOT (type = pull_request)
+branches:
+  only:
+    - develop
 jobs:
   include:
     - os: windows

@@ -1,8 +1,0 @@
-pipeline:
-
-  build:
-    image: gradle:5.5.1-jdk8
-    environment:
-    secrets: [repo_url]
-    commands:
-      - gradle check publish -Ddrill.repo.url=$${REPO_URL}
