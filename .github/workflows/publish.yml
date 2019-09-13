@@ -1,0 +1,37 @@
+name: Build & publish JVM API
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build_and_publish_for_win:
+    name: Publish (windows platform)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: |
+          gradlew build
+          gradlew windowsX64Test
+        env:
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
+      - name: Publish
+        run: gradlew -s -i publishWindowsX64PublicationToMavenRepository
+        env:
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
+  build_and_publish_for_mac:
+    name: Publish (macOS platform)
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build
+        run: gradlew build
+        env:
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
+      - name: Publish
+        run: |
+          gradlew -s -i check
+          gradlew -s -i publish
+        env:
+          GRADLE_OPTS: -Dorg.gradle.daemon=false
