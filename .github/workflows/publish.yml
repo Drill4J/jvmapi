@@ -2,7 +2,7 @@ name: Build & publish JVM API
 on:
   push:
     branches:
-      - develop
+      - github-actions
 
 jobs:
   build_and_publish_for_win:
