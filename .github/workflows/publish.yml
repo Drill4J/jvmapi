@@ -36,4 +36,4 @@ jobs:
         env:
           GRADLE_OPTS: -Dorg.gradle.daemon=false
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-          BINTRAY_API: ${{ secrets.BINTRAY_API_KEY }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
