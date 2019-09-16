@@ -26,12 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build
-        run: gradlew build
+        run: ./gradlew build
         env:
           GRADLE_OPTS: -Dorg.gradle.daemon=false
       - name: Publish
         run: |
-          gradlew -s -i check
-          gradlew -s -i publish
+          ./gradlew -s -i check
+          ./gradlew -s -i publish
         env:
           GRADLE_OPTS: -Dorg.gradle.daemon=false
