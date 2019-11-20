@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version ("1.3.50")
+    id("org.jetbrains.kotlin.multiplatform") version ("1.3.60")
     id("com.jfrog.bintray") version ("1.8.3")
     id("com.jfrog.artifactory") version ("4.9.8")
 }
@@ -93,7 +93,7 @@ fun KotlinMultiplatformExtension.createNativeTargetForCurrentOs(
     name: String,
     config: KotlinNativeTarget.() -> Unit
 ) {
-    val createTarget = (presets.getByName(presetName) as KotlinNativeTargetPreset).createTarget(name)
+    val createTarget = (presets.getByName(presetName) as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTestsPreset).createTarget(name)
     targets.add(createTarget)
     config(createTarget)
 
