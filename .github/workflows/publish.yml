@@ -2,8 +2,8 @@ name: Build & publish JVM API
 on:
   push:
     branches:
-      - github-actions
-
+      - develop
+      - master
 jobs:
   build_and_publish_for_win:
     name: Publish (windows platform)
@@ -20,6 +20,8 @@ jobs:
         run: gradlew -s -i publishWindowsX64PublicationToMavenRepository
         env:
           GRADLE_OPTS: -Dorg.gradle.daemon=false
+          BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
+          BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
   build_and_publish_for_mac:
     name: Publish (macOS platform)
     runs-on: macOS-latest
