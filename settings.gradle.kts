@@ -1,3 +1,18 @@
+plugins {
+    id("com.gradle.enterprise").version("3.0")
+}
 rootProject.name = "jvmapi"
 
-enableFeaturePreview("GRADLE_METADATA")
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishAlways()
+    }
+}
+buildCache {
+    local<DirectoryBuildCache> {
+        directory = File(rootDir, "build-cache")
+        removeUnusedEntriesAfterDays = 30
+    }
+}

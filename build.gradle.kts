@@ -4,12 +4,9 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform") version ("1.3.60")
-    id("com.jfrog.bintray") version ("1.8.3")
-    id("com.jfrog.artifactory") version ("4.9.8")
 }
 
 apply(from = "https://raw.githubusercontent.com/Drill4J/build-scripts/master/publish.gradle")

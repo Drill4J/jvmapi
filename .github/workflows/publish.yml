@@ -10,10 +10,6 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Build
-        run: |
-          gradle build
-          gradle windowsX64Test
       - name: Publish
         run: gradle publishWindowsX64PublicationToMavenRepository
         env:
@@ -30,12 +26,9 @@ jobs:
           key: ${{ runner.os }}-konans-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-konans-
-      - name: Build
-        run: gradle build
       - name: Publish
-        run: |
-          gradle check
-          gradle publish
+        run: gradle --no-daemon publish
         env:
           BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
           BINTRAY_API_KEY: ${{ secrets.BINTRAY_API_KEY }}
+          GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx4096m
