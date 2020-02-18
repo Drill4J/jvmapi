@@ -1,13 +1,10 @@
-plugins {
-    id("com.gradle.enterprise").version("3.0")
-}
 rootProject.name = "jvmapi"
+include(":test")
 
-gradleEnterprise {
-    buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishAlways()
+pluginManagement {
+    repositories {
+        maven(url = "http://oss.jfrog.org/oss-release-local")
+        gradlePluginPortal()
     }
 }
 buildCache {

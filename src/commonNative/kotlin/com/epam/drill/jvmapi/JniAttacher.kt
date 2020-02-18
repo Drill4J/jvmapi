@@ -4,15 +4,21 @@ import com.epam.drill.jvmapi.gen.*
 import kotlinx.cinterop.*
 import kotlin.native.concurrent.*
 
+val vmGlobal = AtomicReference<CPointer<JavaVMVar>?>(null).freeze()
+val jvmti = AtomicReference<CPointer<jvmtiEnvVar>?>(null).freeze()
+
+
+@CName("getJvm")
+fun getJvm(): CPointer<JavaVMVar>? {
+    return vmGlobal.value
+}
 @CName("currentEnvs")
 fun currentEnvs(): JNIEnvPointer {
     return env
 }
 
 @CName("jvmtii")
-fun jvmtii(): CPointer<jvmtiEnvVar>? {
-    return gdata?.pointed?.jvmti
-}
+fun jvmtii(): CPointer<jvmtiEnvVar>? = jvmti.value
 
 fun AttachNativeThreadToJvm() {
     currentEnvs()
@@ -25,7 +31,7 @@ val env: JNIEnvPointer
             ex!!
         } else {
             memScoped {
-                val vms = gjavaVMGlob?.pointed?.jvm!!
+                val vms = vmGlobal.value!!
                 val vmFns = vms.pointed.value!!.pointed
                 val jvmtiEnvPtr = alloc<CPointerVar<JNIEnvVar>>()
                 vmFns.AttachCurrentThread!!(vms, jvmtiEnvPtr.ptr.reinterpret(), null)

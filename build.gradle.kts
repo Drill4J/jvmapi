@@ -1,12 +1,6 @@
-@file:Suppress("UNUSED_VARIABLE")
-
-import org.apache.tools.ant.taskdefs.condition.Os
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version ("1.3.60")
+    id("org.jetbrains.kotlin.multiplatform") version ("1.3.61")
+    id("com.epam.drill.cross-compilation") version "0.15.1"
 }
 
 apply(from = "https://raw.githubusercontent.com/Drill4J/build-scripts/master/publish.gradle")
@@ -14,17 +8,10 @@ apply(from = "https://raw.githubusercontent.com/Drill4J/build-scripts/master/pub
 repositories {
     mavenCentral()
 }
-val presetName =
-    when {
-        Os.isFamily(Os.FAMILY_MAC) -> "macosX64"
-        Os.isFamily(Os.FAMILY_UNIX) -> "linuxX64"
-        Os.isFamily(Os.FAMILY_WINDOWS) -> "mingwX64"
-        else -> throw RuntimeException("Target ${System.getProperty("os.name")} is not supported")
-    }
 
 fun jvmPaths(target: String) =
     run {
-        val includeBase = file("native")
+        val includeBase = file("src")
             .resolve("nativeInterop")
             .resolve("cinterop")
             .resolve(target)
@@ -37,64 +24,24 @@ fun jvmPaths(target: String) =
         arrayOf(includeBase, includeAddition)
     }
 
-val isDevMode = System.getProperty("idea.active") == "true"
 kotlin {
-    targets {
-        if (isDevMode)
-            createNativeTargetForCurrentOs("native") {
-            }
-        else {
-            mingwX64("windowsX64")
-            linuxX64("linuxX64")
-            macosX64("macosX64")
-        }
 
-    }
-
-    sourceSets {
-        val commonNativeSs = maybeCreate("nativeMain")
-        if (!isDevMode) {
-            val windowsX64Main by getting { dependsOn(commonNativeSs) }
-            val linuxX64Main by getting { dependsOn(commonNativeSs) }
-            val macosX64Main by getting { dependsOn(commonNativeSs) }
+    crossCompilation{
+        common{
+            cinterops.create("jvmti") { includeDirs(jvmPaths(target.preset?.name!!)) }
         }
     }
-    configure(sourceSets) {
-        val srcDir = if (name.endsWith("Main")) "src" else "test"
-        val platform = name.dropLast(4)
-        kotlin.srcDir("$platform/$srcDir")
-
+    setOf(
+        mingwX64(),
+        linuxX64(),
+        macosX64()
+    ).forEach { target ->
+        target.compilations["main"].cinterops.create("jvmti") { includeDirs(jvmPaths(target.preset?.name!!)) }
     }
-    configure(targets) {
-        val targetName = name
+    jvm()
 
-        val cm = compilations["main"]
-        if (cm is KotlinNativeCompilation) {
-            File(project.projectDir, "native/nativeInterop/cinterop").listFiles()?.filter { it.isFile }
-                ?.forEach { file ->
-                    val filePath = file.absolutePath
-                    val name = file.nameWithoutExtension
-                    val objects = cm.cinterops?.create(name)
-                    objects?.defFile(filePath)
-                    objects?.includeDirs(jvmPaths(this.preset?.name!!), "./native/nativeInterop/cinterop")
-                }
-        }
-    }
 
     sourceSets.all {
         languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
     }
 }
-
-fun KotlinMultiplatformExtension.createNativeTargetForCurrentOs(
-    name: String,
-    config: KotlinNativeTarget.() -> Unit
-) {
-    val createTarget = (presets.getByName(presetName) as org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetWithTestsPreset).createTarget(name)
-    targets.add(createTarget)
-    config(createTarget)
-
-}
-
-fun KotlinNativeTarget.mainCompilation(configureAction: Action<KotlinNativeCompilation>) =
-    compilations.getByName("main", configureAction as Action<in KotlinNativeCompilation>)

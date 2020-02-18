@@ -4,137 +4,6 @@ excludedFunctions = JNI_OnLoad Agent_OnLoad Agent_OnAttach Agent_OnUnload
 
 ---
 
-typedef struct {
- jvmtiEnv *jvmti;
- JNIEnv *jniEnv;
- jboolean vm_is_started;
- jrawMonitorID lock;
- bool S_JVMTI_EVENT_BREAKPOINT;
- bool IS_JVMTI_EVENT_CLASS_FILE_LOAD_HOOK;
- bool IS_JVMTI_EVENT_CLASS_LOAD;
- bool IS_JVMTI_EVENT_CLASS_PREPARE;
- bool IS_JVMTI_EVENT_COMPILED_METHOD_LOAD;
- bool IS_JVMTI_EVENT_COMPILED_METHOD_UNLOAD;
- bool IS_JVMTI_EVENT_DATA_DUMP_REQUEST;
- bool IS_JVMTI_EVENT_DYNAMIC_CODE_GENERATED;
- bool IS_JVMTI_EVENT_EXCEPTION;
- bool IS_JVMTI_EVENT_EXCEPTION_CATCH;
- bool IS_JVMTI_EVENT_FIELD_ACCESS;
- bool IS_JVMTI_EVENT_FIELD_MODIFICATION;
- bool IS_JVMTI_EVENT_FRAME_POP;
- bool IS_JVMTI_EVENT_GARBAGE_COLLECTION_FINISH;
- bool IS_JVMTI_EVENT_GARBAGE_COLLECTION_START;
- bool IS_JVMTI_EVENT_METHOD_ENTRY;
- bool IS_JVMTI_EVENT_METHOD_EXIT;
- bool IS_JVMTI_EVENT_MONITOR_CONTENDED_ENTER;
- bool IS_JVMTI_EVENT_MONITOR_CONTENDED_ENTERED;
- bool IS_JVMTI_EVENT_MONITOR_WAIT;
- bool IS_JVMTI_EVENT_MONITOR_WAITED;
- bool IS_JVMTI_EVENT_NATIVE_METHOD_BIND;
- bool IS_JVMTI_EVENT_OBJECT_FREE;
- bool IS_JVMTI_EVENT_RESOURCE_EXHAUSTED;
- bool IS_JVMTI_EVENT_SINGLE_STEP;
- bool IS_JVMTI_EVENT_THREAD_END;
- bool IS_JVMTI_EVENT_THREAD_START;
- bool IS_JVMTI_EVENT_VM_DEATH;
- bool IS_JVMTI_EVENT_VM_INIT;
- bool IS_JVMTI_EVENT_VM_OBJECT_ALLOC;
- bool IS_JVMTI_EVENT_VM_START;
- bool IS_JVMTI_EVENT_BREAKPOINT;
-} GlobalAgentData;
-
-
-static GlobalAgentData *gdata;
-
-
-typedef struct {
- JavaVM *jvm;
- jvmtiEventCallbacks callbackss;
- void* tes;
-} javaVMGlob;
-
-static javaVMGlob *gjavaVMGlob;
-
-void saveVmToGlobal(JavaVM *vmm){
-    static javaVMGlob data;
-    (void)memset((void*)&data, 0, sizeof(data));
-    gjavaVMGlob = &data;
-    gjavaVMGlob->jvm = vmm;
-}
-
-jint agentSetup(JavaVM vm)
-{
-    static GlobalAgentData data;
-    jvmtiEnv              *jvmti;
-    jvmtiError             error;
-    jint                   res;
-    jvmtiCapabilities      capabilities;
-    jvmtiEventCallbacks    callbacks;
-    (void)memset((void*)&data, 0, sizeof(data));
-    gdata = &data;
-    res = vm->GetEnv(vm,(void **)&jvmti, JVMTI_VERSION_1);
-    gdata->jvmti = jvmti;
-
-   return JNI_OK;
-   }
-
-extern void jvmtiEventVMInitEvent(jvmtiEnv *jvmti_env,
-     JNIEnv* jni_env,
-     jthread thread);
-
-extern void jvmtiEventClassFileLoadHookEvent(jvmtiEnv *jvmti_env,
-                                                  JNIEnv* jni_env,
-                                                  jclass class_being_redefined,
-                                                  jobject loader,
-                                                  const char* name,
-                                                  jobject protection_domain,
-                                                  jint class_data_len,
-                                                  const unsigned char* class_data,
-                                                  jint* new_class_data_len,
-                                                  unsigned char** new_class_data);
-
-jvmtiEventCallbacks generateDefaultCallbacks() {
-	jvmtiEventCallbacks callbacks = {NULL};
-	memset(&callbacks, 0, sizeof(callbacks));
-    callbacks.VMInit = &jvmtiEventVMInitEvent;
-    callbacks.ClassFileLoadHook = &jvmtiEventClassFileLoadHookEvent;
-//    callbacks.MethodExit = &jvmtiEventMethodExitEvent;
-//    callbacks.SingleStep = &jvmtiEventSingleStepEvent;
-
-
-
-//callbacks.VMDeath = &jvmtiEventVMDeathEvent;
-//callbacks.ThreadStart = &jvmtiEventThreadStartEvent;
-//callbacks.ThreadEnd = &jvmtiEventThreadEndEvent;
-
-//callbacks.ClassLoad = &jvmtiEventClassLoadEvent;
-//callbacks.ClassPrepare = &jvmtiEventClassPrepareEvent;
-//callbacks.VMStart = &jvmtiEventVMStartEvent;
-
-//callbacks.FramePop = &jvmtiEventFramePopEvent;
-//callbacks.Breakpoint = &jvmtiEventBreakpointEvent;
-//callbacks.FieldAccess = &jvmtiEventFieldAccessEvent;
-//callbacks.FieldModification = &jvmtiEventFieldModificationEvent;
-//callbacks.MethodEntry = &jvmtiEventMethodEntryEvent;
-
-//callbacks.CompiledMethodLoad = &jvmtiEventCompiledMethodLoadEvent;
-//callbacks.CompiledMethodUnload = &jvmtiEventCompiledMethodUnloadEvent;
-//callbacks.DynamicCodeGenerated = &jvmtiEventDynamicCodeGeneratedEvent;
-//callbacks.DataDumpRequest = &jvmtiEventDataDumpRequestEvent;
-//callbacks.MonitorWait = &jvmtiEventMonitorWaitEvent;
-//callbacks.MonitorWaited = &jvmtiEventMonitorWaitedEvent;
-//callbacks.MonitorContendedEnter = &jvmtiEventMonitorContendedEnterEvent;
-//callbacks.MonitorContendedEntered = &jvmtiEventMonitorContendedEnteredEvent;
-//callbacks.ResourceExhausted = &jvmtiEventResourceExhaustedEvent;
-//callbacks.GarbageCollectionStart = &jvmtiEventGarbageCollectionStartEvent;
-//callbacks.GarbageCollectionFinish = &jvmtiEventGarbageCollectionFinishEvent;
-//callbacks.ObjectFree = &jvmtiEventObjectFreeEvent;
-//callbacks.VMObjectAlloc = &jvmtiEventVMObjectAllocEvent;
-    gjavaVMGlob->callbackss = callbacks;
-	return callbacks;
-}
-
-
 //////////////////////////////////////JVMTI FUNCTIONS///////////////////////////////////////
 extern jvmtiError checkEx(jvmtiError errCode, char* fname);
 extern jvmtiEnv * jvmtii();
@@ -747,6 +616,7 @@ jvmtiError GetJLocationFormat(jvmtiJlocationFormat* format_ptr) {
 
 //////////////////////////////////////JNI FUNCTIONS///////////////////////////////////////
 extern JNIEnv * currentEnvs();
+extern JavaVM * getJvm();
 
 jint GetVersion() {
         jint variable = (*currentEnvs())->GetVersion(currentEnvs());
@@ -2086,35 +1956,35 @@ jobjectRefType GetObjectRefType(jobject obj) {
  		return variable;
     }
 jint DestroyJavaVM() {
-    jint variable = (*(gjavaVMGlob->jvm))->DestroyJavaVM(gjavaVMGlob->jvm);
+    jint variable = (*getJvm())->DestroyJavaVM(getJvm());
 		if((*currentEnvs())->ExceptionCheck(currentEnvs())){
 				(*currentEnvs())->ExceptionDescribe(currentEnvs());
 		 }
  		return variable;
 }
 jint AttachCurrentThread(void **penv, void *args) {
-    jint variable = (*(gjavaVMGlob->jvm))->AttachCurrentThread(gjavaVMGlob->jvm, penv, args);
+    jint variable = (*getJvm())->AttachCurrentThread(getJvm(), penv, args);
 		if((*currentEnvs())->ExceptionCheck(currentEnvs())){
 				(*currentEnvs())->ExceptionDescribe(currentEnvs());
 		 }
  		return variable;
 }
 jint DetachCurrentThread() {
-    jint variable = (*(gjavaVMGlob->jvm))->DetachCurrentThread(gjavaVMGlob->jvm);
+    jint variable = (*getJvm())->DetachCurrentThread(getJvm());
 		if((*currentEnvs())->ExceptionCheck(currentEnvs())){
 				(*currentEnvs())->ExceptionDescribe(currentEnvs());
 		 }
  		return variable;
 }
 jint GetEnv(void **penv, jint version) {
-    jint variable = (*(gjavaVMGlob->jvm))->GetEnv(gjavaVMGlob->jvm, penv, version);
+    jint variable = (*getJvm())->GetEnv(getJvm(), penv, version);
 		if((*currentEnvs())->ExceptionCheck(currentEnvs())){
 				(*currentEnvs())->ExceptionDescribe(currentEnvs());
 		 }
  		return variable;
 }
 jint AttachCurrentThreadAsDaemon(void **penv, void *args) {
-    jint variable = (*(gjavaVMGlob->jvm))->AttachCurrentThreadAsDaemon(gjavaVMGlob->jvm, penv, args);
+    jint variable = (*getJvm())->AttachCurrentThreadAsDaemon(getJvm(), penv, args);
 		if((*currentEnvs())->ExceptionCheck(currentEnvs())){
 				(*currentEnvs())->ExceptionDescribe(currentEnvs());
 		 }
