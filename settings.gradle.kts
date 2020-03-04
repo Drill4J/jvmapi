@@ -1,5 +1,5 @@
 rootProject.name = "jvmapi"
-include(":test")
+//include(":test")
 
 pluginManagement {
     repositories {

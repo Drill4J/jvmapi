@@ -201,7 +201,7 @@ jlong** tag_result_ptr) {
     return checkEx((*jvmtii())->GetObjectsWithTags(jvmtii(), tag_count, tags, count_ptr, object_result_ptr, tag_result_ptr),"GetObjectsWithTags");
 }
 jvmtiError ForceGarbageCollection() {
-    return checkEx((*jvmtii())->ForceGarbageCollection(jvmti()),"ForceGarbageCollection(jvmti");
+    return checkEx((*jvmtii())->ForceGarbageCollection(jvmtii()),"ForceGarbageCollection(jvmti");
 }
 jvmtiError IterateOverObjectsReachableFromObject(jobject object,
 jvmtiObjectReferenceCallback object_reference_callback,
@@ -591,7 +591,7 @@ jvmtiError GetPhase(jvmtiPhase* phase_ptr) {
     return checkEx((*jvmtii())->GetPhase(jvmtii(), phase_ptr),"GetPhase");
 }
 jvmtiError DisposeEnvironment() {
-    return checkEx((*jvmtii())->DisposeEnvironment(jvmti()),"DisposeEnvironment(jvmti");
+    return checkEx((*jvmtii())->DisposeEnvironment(jvmtii()),"DisposeEnvironment(jvmti");
 }
 jvmtiError SetEnvironmentLocalStorage(const void* data) {
     return checkEx((*jvmtii())->SetEnvironmentLocalStorage(jvmtii(), data),"SetEnvironmentLocalStorage");

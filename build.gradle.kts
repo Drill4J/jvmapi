@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version ("1.3.61")
+    id("org.jetbrains.kotlin.multiplatform") version ("1.3.70")
     id("com.epam.drill.cross-compilation") version "0.15.1"
 }
 
@@ -15,10 +15,10 @@ fun jvmPaths(target: String) =
             .resolve("nativeInterop")
             .resolve("cinterop")
             .resolve(target)
-        val includeAddition = when {
-            target == "linuxX64" -> includeBase.resolve("linux")
-            target == "macosX64" -> includeBase.resolve("darwin")
-            target == "mingwX64" -> includeBase.resolve("win32")
+        val includeAddition = when (target) {
+            "linuxX64" -> includeBase.resolve("linux")
+            "macosX64" -> includeBase.resolve("darwin")
+            "mingwX64" -> includeBase.resolve("win32")
             else -> throw RuntimeException("We don't know the prefix for ${System.getProperty("os.name")} target")
         }
         arrayOf(includeBase, includeAddition)
