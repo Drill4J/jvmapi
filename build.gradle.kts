@@ -1,12 +1,18 @@
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version ("1.3.70")
-    id("com.epam.drill.cross-compilation") version "0.15.1"
+    id("org.jetbrains.kotlin.multiplatform")
+    id("com.epam.drill.cross-compilation")
+    `maven-publish`
 }
 
-apply(from = "https://raw.githubusercontent.com/Drill4J/build-scripts/master/publish.gradle")
+val scriptUrl: String by extra
+
+apply(from = "$scriptUrl/git-version.gradle.kts")
 
 repositories {
+    mavenLocal()
+    apply(from = "$scriptUrl/maven-repo.gradle.kts")
     mavenCentral()
+    jcenter()
 }
 
 fun jvmPaths(target: String) =
@@ -24,10 +30,18 @@ fun jvmPaths(target: String) =
         arrayOf(includeBase, includeAddition)
     }
 
+val drillLogger: String by extra
+
 kotlin {
 
-    crossCompilation{
-        common{
+    crossCompilation {
+        common {
+            defaultSourceSet {
+                dependsOn(sourceSets.named("commonMain").get())
+                dependencies {
+                    implementation("com.epam.drill.logger:logger:$drillLogger")
+                }
+            }
             cinterops.create("jvmti") { includeDirs(jvmPaths(target.preset?.name!!)) }
         }
     }
@@ -38,10 +52,24 @@ kotlin {
     ).forEach { target ->
         target.compilations["main"].cinterops.create("jvmti") { includeDirs(jvmPaths(target.preset?.name!!)) }
     }
-    jvm()
+
 
 
     sourceSets.all {
         languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+    }
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(kotlin("stdlib-common"))
+            }
+        }
+        jvm {
+            compilations["main"].defaultSourceSet {
+                dependencies {
+                    implementation(kotlin("stdlib-jdk8"))
+                }
+            }
+        }
     }
 }
