@@ -6,6 +6,7 @@ import mu.KotlinLogging
 import kotlin.native.concurrent.*
 import kotlin.reflect.*
 
+@SharedImmutable
 private val logger = KotlinLogging.logger("jvm api")
 
 @CName("checkEx")
