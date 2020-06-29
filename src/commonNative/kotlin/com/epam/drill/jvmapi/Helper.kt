@@ -1,13 +1,13 @@
 package com.epam.drill.jvmapi
 
 import com.epam.drill.jvmapi.gen.*
+import com.epam.drill.logger.*
 import kotlinx.cinterop.*
-import mu.KotlinLogging
 import kotlin.native.concurrent.*
 import kotlin.reflect.*
 
 @SharedImmutable
-private val logger = KotlinLogging.logger("jvm api")
+private val logger = Logging.logger("jvm api")
 
 @CName("checkEx")
 fun checkEx(errCode: UInt, funName: String): UInt {
