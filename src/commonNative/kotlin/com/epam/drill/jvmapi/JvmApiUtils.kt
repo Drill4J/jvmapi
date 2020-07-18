@@ -18,9 +18,18 @@ fun instance(name: String): Pair<jclass?, jobject?> {
 
 fun jbyteArray?.readBytes() = this?.let { jbytes ->
     val length = GetArrayLength(jbytes)
+    if (length == 0) return@let byteArrayOf()
     val buffer: COpaquePointer? = GetPrimitiveArrayCritical(jbytes, null)
     try {
-        buffer?.readBytes(length)
+        ByteArray(length).apply {
+            usePinned { destination ->
+                platform.posix.memcpy(
+                    destination.addressOf(0),
+                    buffer,
+                    length.convert()
+                )
+            }
+        }
     } finally {
         ReleasePrimitiveArrayCritical(jbytes, buffer, JNI_ABORT)
     }
@@ -73,7 +82,16 @@ inline fun jbyteArray.toByteArrayWithRelease(
         bytes.forEachIndexed { index, byte -> this[index] = byte }
     }
     try {
-        block(nativeArray!!.readBytes(GetArrayLength(this)))
+        val length = GetArrayLength(this)
+        block(ByteArray(length).apply {
+            usePinned { destination ->
+                platform.posix.memcpy(
+                    destination.addressOf(0),
+                    nativeArray,
+                    length.convert()
+                )
+            }
+        })
     } finally {
         ReleaseByteArrayElements(this, nativeArray, JNI_ABORT)
     }
