@@ -36,11 +36,14 @@ fun jbyteArray?.readBytes() = this?.let { jbytes ->
 
 }
 
-inline fun withJSting(block: JStingConverter.() -> Unit) {
+inline fun <reified R> withJSting(block: JStingConverter.() -> R): R {
     val jStingConverter = JStingConverter()
-    block(jStingConverter)
-    jStingConverter.localStrings.forEach { (x, y) ->
-        jni.ReleaseStringUTFChars!!(env, x, y)
+    try {
+        return block(jStingConverter)
+    } finally {
+        jStingConverter.localStrings.forEach { (x, y) ->
+            jni.ReleaseStringUTFChars!!(env, x, y)
+        }
     }
 }
 
