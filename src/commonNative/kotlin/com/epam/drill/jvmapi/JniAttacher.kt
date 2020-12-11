@@ -24,7 +24,6 @@ fun AttachNativeThreadToJvm() {
     currentEnvs()
 }
 
-@kotlin.native.concurrent.ThreadLocal
 val env: JNIEnvPointer
     get() {
         return if (ex != null) {
@@ -43,7 +42,6 @@ val env: JNIEnvPointer
         }
     }
 
-@kotlin.native.concurrent.ThreadLocal
 val jni: JNI
     get() = env.pointed.pointed!!
 
